@@ -38,7 +38,7 @@ jobs:
       - name: Setup helm
         uses: azure/setup-helm@v4
 
-      - name: Process env directories
+      - name: Show manifest files
         uses: actions/github-script@v6
         with:
           script: |
