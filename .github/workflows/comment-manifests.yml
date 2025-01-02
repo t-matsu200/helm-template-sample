@@ -67,9 +67,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.issue.number,
-                  body: `<details>
-
-                  <summary>Show manifests in ${dir}</summary>
+                  body: `<details><summary>Show manifests in ${dir}</summary>
 
                   \`\`\`yaml
                   ${output}
