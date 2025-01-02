@@ -65,11 +65,10 @@ jobs:
 
                 const body = `<details><summary>Show manifests in ${dir}</summary>
 
-                \`\`\`yaml
-                ${output}
-                \`\`\`
-
-                </details>`
+              \`\`\`yaml
+              ${output}
+              \`\`\`
+              </details>`
 
                 github.rest.issues.createComment({
                   owner: context.repo.owner,
