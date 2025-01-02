@@ -63,17 +63,19 @@ jobs:
                 const output = execSync(`helm template ${chartDir} --values ${valuesFile}`, { encoding: 'utf-8' });
                 console.log(`Helm template output for ${dir}:\n${output}`);
 
+                const body = `<details><summary>Show manifests in ${dir}</summary>
+
+                \`\`\`yaml
+                ${output}
+                \`\`\`
+
+                </details>`
+
                 github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.issue.number,
-                  body: `<details><summary>Show manifests in ${dir}</summary>
-
-                  \`\`\`yaml
-                  ${output}
-                  \`\`\`
-
-                  </details>`
+                  body: body
                 })
               } catch (error) {
                 console.error(`Error running helm template for ${dir}:\n${error.message}`);
