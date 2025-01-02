@@ -21,8 +21,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint workflows
+  comment-manifests:
+    name: Comment k8s manifest files
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -67,7 +67,14 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.issue.number,
-                  body: `Show manifests in ${dir}\n` + output
+                  body: `<details>
+
+                    <summary>Show manifests in ${dir}</summary>
+                    \`\`\`yaml
+                    ${output}
+                    \`\`\`
+
+                    </details>`
                 })
               } catch (error) {
                 console.error(`Error running helm template for ${dir}:\n${error.message}`);
