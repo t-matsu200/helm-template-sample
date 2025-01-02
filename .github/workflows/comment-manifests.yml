@@ -1,0 +1,74 @@
+name: Comment the manifest files to the PullRequest
+run-name: ${{ github.workflow }} - ${{ github.event.pull_request.title }}
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    paths:
+      - "charts/**"
+      - "env/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint workflows
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup helm
+        uses: azure/setup-helm@v4
+
+      - name: Process env directories
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { execSync } = require('child_process');
+
+            const baseDir = './env'; // env 配下のディレクトリ
+            const chartDir = './charts'; // Helm チャートのディレクトリ
+            const directories = fs.readdirSync(baseDir, { withFileTypes: true })
+              .filter(dirent => dirent.isDirectory())
+              .map(dirent => dirent.name);
+
+            directories.forEach(dir => {
+              console.log(`Processing directory: ${dir}`);
+              
+              // Helm template コマンドを実行
+              const valuesFile = path.join(baseDir, dir, 'values.yml');
+              try {
+                const output = execSync(`helm template ${chartDir} --values ${valuesFile}`, { encoding: 'utf-8' });
+                console.log(`Helm template output for ${dir}:\n${output}`);
+
+                github.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: `Show manifests in ${dir}\n` + output
+                })
+              } catch (error) {
+                console.error(`Error running helm template for ${dir}:\n${error.message}`);
+                throw error;
+              }
+            });

@@ -1,0 +1,17 @@
+env: dev
+
+helmSample:
+  repository: nginx
+  tag: "latest"
+  pullPolicy: IfNotPresent
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+service:
+  type: ClusterIP

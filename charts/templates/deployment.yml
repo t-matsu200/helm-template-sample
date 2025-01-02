@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "nginx-deployment-{{ .Values.env }}"
+  labels:
+    app: helmSample
+spec:
+  selector:
+    matchLabels:
+      app: helmSample
+  serviceName: "nginx-svc-{{ .Values.env }}"
+  replicas: {{ .Values.helmSample.replicaCount }}
+  minReadySeconds: 30
+  template:
+    metadata:
+      labels:
+        app: helmSample
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: "nginx-{{ .Values.env }}"
+        image: "{{ .Values.helmSample.repository }}:{{ .Values.helmSample.tag }}"
+        imagePullPolicy: {{ .Values.helmSample.pullPolicy | quote }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          failureThreshold: 5
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          failureThreshold: 5
+          periodSeconds: 30
+        resources:
+{{ toYaml .Values.helmSample.resources | indent 10 }}
+        ports:
+        - containerPort: 80
+          name: web

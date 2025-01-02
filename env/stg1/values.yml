@@ -1,0 +1,10 @@
+env: stg1
+
+helmSample:
+  tag: "1.27.2"
+  replicaCount: 1
+
+service:
+  type: NodePort
+  web:
+    nodePort: 31082

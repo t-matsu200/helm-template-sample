@@ -1,0 +1,10 @@
+env: prod
+
+helmSample:
+  tag: "1.27.3"
+  replicaCount: 2
+
+service:
+  type: NodePort
+  web:
+    nodePort: 31083
