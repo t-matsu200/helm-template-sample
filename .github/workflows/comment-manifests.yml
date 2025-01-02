@@ -69,12 +69,13 @@ jobs:
                   issue_number: context.issue.number,
                   body: `<details>
 
-                    <summary>Show manifests in ${dir}</summary>
-                    \`\`\`yaml
-                    ${output}
-                    \`\`\`
+                  <summary>Show manifests in ${dir}</summary>
 
-                    </details>`
+                  \`\`\`yaml
+                  ${output}
+                  \`\`\`
+
+                  </details>`
                 })
               } catch (error) {
                 console.error(`Error running helm template for ${dir}:\n${error.message}`);
