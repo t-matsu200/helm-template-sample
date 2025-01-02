@@ -2,7 +2,7 @@ name: Comment the manifest files to the PullRequest
 run-name: ${{ github.workflow }} - ${{ github.event.pull_request.title }}
 
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - main
     paths:
@@ -42,6 +42,7 @@ jobs:
       - name: Show manifest files
         uses: actions/github-script@v7
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs');
             const path = require('path');
@@ -62,7 +63,7 @@ jobs:
                 const output = execSync(`helm template ${chartDir} --values ${valuesFile}`, { encoding: 'utf-8' });
                 console.log(`Helm template output for ${dir}:\n${output}`);
 
-                github.issues.createComment({
+                github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.issue.number,
