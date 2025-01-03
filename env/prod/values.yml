@@ -1,5 +1,9 @@
 env: prod
 
+resourcequota:
+  cpu: 2
+  memory: 2Gi
+
 helmSample:
   tag: "1.27.3"
   replicaCount: 2

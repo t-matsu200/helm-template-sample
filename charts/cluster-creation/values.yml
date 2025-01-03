@@ -1,0 +1,5 @@
+env: dev
+
+resourcequota:
+  cpu: 0.5
+  memory: 512Mi
