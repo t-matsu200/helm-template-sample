@@ -9,7 +9,7 @@ on:
       - ".github/workflows/*.yml"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 defaults:
@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.head_ref }}
 
       - name: Check workflow files
         uses: docker://rhysd/actionlint:latest

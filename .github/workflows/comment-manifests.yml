@@ -10,7 +10,7 @@ on:
       - "env/**"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
 defaults:
@@ -21,8 +21,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint workflows
+  comment-manifests:
+    name: Comment k8s manifest files
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     permissions:
@@ -34,13 +34,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.head_ref }}
 
       - name: Setup helm
         uses: azure/setup-helm@v4
 
-      - name: Process env directories
-        uses: actions/github-script@v6
+      - name: Show manifest files
+        uses: actions/github-script@v7
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs');
             const path = require('path');
@@ -56,16 +58,25 @@ jobs:
               console.log(`Processing directory: ${dir}`);
               
               // Helm template コマンドを実行
+              const defaultValuesFile = path.join(chartDir, 'values.yml');
               const valuesFile = path.join(baseDir, dir, 'values.yml');
               try {
-                const output = execSync(`helm template ${chartDir} --values ${valuesFile}`, { encoding: 'utf-8' });
+                const cmdHelmTemplate = `helm template ${chartDir} -f ${defaultValuesFile} -f ${valuesFile}`;
+                const output = execSync(cmdHelmTemplate, { encoding: 'utf-8' });
                 console.log(`Helm template output for ${dir}:\n${output}`);
 
-                github.issues.createComment({
+                const body = `<details><summary>Show manifests in ${dir}</summary>
+
+              \`\`\`yaml
+              ${output}
+              \`\`\`
+              </details>`
+
+                github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.issue.number,
-                  body: `Show manifests in ${dir}\n` + output
+                  body: body
                 })
               } catch (error) {
                 console.error(`Error running helm template for ${dir}:\n${error.message}`);
