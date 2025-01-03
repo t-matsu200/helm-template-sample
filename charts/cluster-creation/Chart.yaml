@@ -1,0 +1,6 @@
+apiVersion: v3
+name: helm-cluster-creation-sample
+type: application
+version: 1.0.0
+appVersion: 1.0.0
+kubeVersion: '>=1.22.0-0'

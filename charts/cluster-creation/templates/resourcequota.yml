@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "resourcequota-{{ .Values.env }}"
+spec:
+  hard:
+    limits.cpu: "{{ .Values.resourcequota.cpu }}"
+    limits.memory: "{{ .Values.resourcequota.memory }}"
+    requests.cpu: "{{ .Values.resourcequota.cpu }}"
+    requests.memory: "{{ .Values.resourcequota.memory }}"

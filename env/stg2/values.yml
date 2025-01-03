@@ -1,5 +1,9 @@
 env: stg2
 
+resourcequota:
+  cpu: 1.5
+  memory: 1.5Gi
+
 helmSample:
   tag: "1.27.1"
   replicaCount: 1
