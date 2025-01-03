@@ -65,7 +65,7 @@ jobs:
                 const output = execSync(cmdHelmTemplate, { encoding: 'utf-8' });
                 console.log(`Helm template output for ${dir}:\n${output}`);
 
-                const body = `<details><summary>Show manifests in ${dir}</summary>
+                const body = `<details><summary>Show cluster-creation manifests in ${dir}</summary>
 
               \`\`\`yaml
               ${output}
@@ -110,7 +110,7 @@ jobs:
                 const output = execSync(cmdHelmTemplate, { encoding: 'utf-8' });
                 console.log(`Helm template output for ${dir}:\n${output}`);
 
-                const body = `<details><summary>Show manifests in ${dir}</summary>
+                const body = `<details><summary>Show apps manifests in ${dir}</summary>
 
               \`\`\`yaml
               ${output}
