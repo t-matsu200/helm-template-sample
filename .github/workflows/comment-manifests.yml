@@ -58,9 +58,11 @@ jobs:
               console.log(`Processing directory: ${dir}`);
               
               // Helm template コマンドを実行
+              const defaultValuesFile = path.join(chartDir, 'values.yml');
               const valuesFile = path.join(baseDir, dir, 'values.yml');
               try {
-                const output = execSync(`helm template ${chartDir} --values ${valuesFile}`, { encoding: 'utf-8' });
+                const cmdHelmTemplate = `helm template ${chartDir} -f ${defaultValuesFile} -f ${valuesFile}`;
+                const output = execSync(cmdHelmTemplate, { encoding: 'utf-8' });
                 console.log(`Helm template output for ${dir}:\n${output}`);
 
                 const body = `<details><summary>Show manifests in ${dir}</summary>
